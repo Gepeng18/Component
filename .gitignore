@@ -35,3 +35,7 @@ logs/
 
 ### VS Code ###
 .vscode/
+
+src/
+#/src/main/java/site/pyyf/utils/application.properties
+#/src/main/java/site/pyyf/utils/*
