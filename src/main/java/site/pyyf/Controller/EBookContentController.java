@@ -2,6 +2,7 @@ package site.pyyf.Controller;
 
 import com.alibaba.fastjson.JSONObject;
 
+import com.alibaba.fastjson.parser.Feature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,7 +12,6 @@ import site.pyyf.entity.Ebook;
 import site.pyyf.entity.EbookConent;
 import site.pyyf.service.EbookContentService;
 import site.pyyf.service.LibraryService;
-import site.pyyf.service.ResolveHeaderService;
 import site.pyyf.utils.CommunityUtil;
 import site.pyyf.utils.MarkdownUtils;
 
@@ -22,27 +22,13 @@ public class EBookContentController {
     public EbookContentService ebookContentService;
 
     @Autowired
-    public ResolveHeaderService resolveHeaderService;
-
-    @Autowired
     private LibraryService libraryService;
-
-//    @RequestMapping("/ebook")
-//    public String fun(Model model) {
-////        final InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("容器_ossmd.md");
-////        resolveHeaderService.readFile(resourceAsStream,"容器_ossmd.md");
-//        String header = ebookService.selectHeaderByFileName("容器_ossmd.md");
-//        final Directory directory = JSONObject.parseObject(header, Directory.class);
-//        model.addAttribute("headers", directory);
-//        return "index";
-//    }
 
     @RequestMapping(path = "/ebook/getbook/{bookId}")
     public String getEbook(@PathVariable(value = "bookId") String bookId, Model model) {
 
         Ebook ebook = libraryService.selectByBookId(bookId);
-
-        final Directory directory = JSONObject.parseObject(ebook.getHeader(), Directory.class);
+        final Directory directory = JSONObject.parseObject(ebook.getHeader(), Directory.class, Feature.OrderedField);
         model.addAttribute("headers", directory);
         return "ebook";
     }

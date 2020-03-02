@@ -36,6 +36,6 @@ logs/
 ### VS Code ###
 .vscode/
 
-
+### Ebook ###
 /src/main/resources/application.properties
 /src/main/java/site/pyyf/utils/UploadDir.java

@@ -10,7 +10,7 @@ import java.util.Map;
 public class Directory {
     String contentId;
     String content;
-    private Map<String, Directory> subNodes = new LinkedHashMap<>();
+    private LinkedHashMap<String, Directory> subNodes = new LinkedHashMap<>();
 
     // 添加子节点
     public void addSubNode(String fileName, Directory node) {

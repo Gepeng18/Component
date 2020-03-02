@@ -2,6 +2,7 @@ package site.pyyf.Controller;
 
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,26 +17,24 @@ import java.io.EOFException;
 import java.util.List;
 
 @Controller
+@Scope("prototype")
 public class LibraryController {
-
     @Autowired
     private ResolveHeaderService resolveHeaderService;
-
     @Autowired
     private LibraryService libraryService;
 
     @RequestMapping("/library")
-    public String getLibraryPage(Model model){
+    public String getLibraryPage(Model model) {
         List<Ebook> ebooks = libraryService.selectAllEbooks();
-        model.addAttribute("ebooks",ebooks);
+        model.addAttribute("ebooks", ebooks);
         return "library";
     }
 
 
     @RequestMapping("/ebook/upload")
     public String upload(MultipartFile file) throws Exception {
-
-        resolveHeaderService.readFile(file.getInputStream(),file.getOriginalFilename());
+        resolveHeaderService.readFile(file.getInputStream(), file.getOriginalFilename());
         return "redirect:/library";
     }
 

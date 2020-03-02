@@ -32,10 +32,14 @@ public class ResolveHeaderService//存储指定文件夹所有文件名的 树�
 
     @Autowired
     private IebookContentMapper iebookContentMapper;
+
+
     @Autowired
     private LibraryService libraryService;
-    private String ebookId;
 
+    private boolean jugleFirstLevelHeader  = false;
+    private String ebookId;
+    private int firstLevelHeader;
     private Directory pre;
     private StringBuilder tmp = new StringBuilder();
     private Directory root;//树根（相当于链表的头指针）
@@ -66,9 +70,27 @@ public class ResolveHeaderService//存储指定文件夹所有文件名的 树�
     public void resolveHeader(String buffer) {
         boolean isHeaderLine = false;
         if (detect) {
-            Directory current = root;
+
+            /* ------------------- 判断第一次出现的标题是几级标题 ----------------- */
+            if(!jugleFirstLevelHeader) {
+                for (int i = 1; i < 7; i++) {
+                    if (isNHeader(buffer, i)) {
+                        firstLevelHeader = i;
+                        jugleFirstLevelHeader = true;
+                        break;
+                    }
+                }
+            }
+
+            for (int i = 1; i < firstLevelHeader; i++) {
+                if (isNHeader(buffer, i)) {
+                    throw new RuntimeException("出现了更高的标题");
+                }
+            }
+
+
             //一级目录直接加到根上去
-            if (isNHeader(buffer, 1)) {
+            if (isNHeader(buffer, firstLevelHeader)) {
                 isHeaderLine = true;
 
                 if(root.getAllNode().size()>0){
@@ -86,13 +108,14 @@ public class ResolveHeaderService//存储指定文件夹所有文件名的 树�
                     tmp = new StringBuilder();
                 }
                 final Directory newDir = new Directory();
-                root.addSubNode(buffer.substring(1), newDir);
+                root.addSubNode(buffer.substring(firstLevelHeader), newDir);
                 pre = newDir;
             }
-            for (int i = 2; i < 7; i++) {
+            Directory current = root;
+            for (int i = firstLevelHeader+1; i < 7; i++) {
                 if (isNHeader(buffer, i)) {
                     isHeaderLine = true;
-                    int times = i - 1;
+                    int times = i - firstLevelHeader;
                     while (times-- != 0) {
                         final String pre = (String) current.getAllNode().keySet().toArray()[current.getAllNode().size() - 1];
                         current = current.getAllNode().get(pre);
