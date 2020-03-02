@@ -39,6 +39,10 @@
     </select>
 
 
-
+    <delete id="deleteByBookId">
+        delete
+        from ebook_content
+        where ebook_id=#{bookId}
+    </delete>
 
 </mapper>

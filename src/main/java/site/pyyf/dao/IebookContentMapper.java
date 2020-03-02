@@ -17,5 +17,5 @@ public interface IebookContentMapper {
     void updateContentByContentId(String contentId,String content);
 
 
-
+    void deleteByBookId(String bookId);
 }

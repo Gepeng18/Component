@@ -15,6 +15,9 @@ public interface IlibraryMapper {
 
     void insertEbook(Ebook eBook);
 
-    String selectHeaderByBookId(String bookId);
+    String selectHeaderByBookId(String ebookId);
 
+    void deleteByBookId(String ebookId);
+
+    void updateEbookNameByBookId(String ebookId,String ebookName);
 }

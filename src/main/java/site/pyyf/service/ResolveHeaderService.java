@@ -37,13 +37,14 @@ public class ResolveHeaderService//存储指定文件夹所有文件名的 树�
     @Autowired
     private LibraryService libraryService;
 
-    private boolean jugleFirstLevelHeader  = false;
+    private boolean jugleFirstLevelHeader = false;
     private String ebookId;
     private int firstLevelHeader;
     private Directory pre;
     private StringBuilder tmp = new StringBuilder();
     private Directory root;//树根（相当于链表的头指针）
     private boolean detect = true;
+
     public Directory getRoot()//获取树根
     {
         return root;
@@ -58,7 +59,7 @@ public class ResolveHeaderService//存储指定文件夹所有文件名的 树�
 
         final String trimed = buffer.trim();
         try {
-            return (trimed.charAt(n - 1) == '#')&&(trimed.charAt(n) != '#');
+            return (trimed.charAt(n - 1) == '#') && (trimed.charAt(n) != '#');
         } catch (IndexOutOfBoundsException e) {
             //超过范围了，表明第n个数没有，则肯定不是n级标题
             return false;
@@ -72,7 +73,7 @@ public class ResolveHeaderService//存储指定文件夹所有文件名的 树�
         if (detect) {
 
             /* ------------------- 判断第一次出现的标题是几级标题 ----------------- */
-            if(!jugleFirstLevelHeader) {
+            if (!jugleFirstLevelHeader) {
                 for (int i = 1; i < 7; i++) {
                     if (isNHeader(buffer, i)) {
                         firstLevelHeader = i;
@@ -93,7 +94,7 @@ public class ResolveHeaderService//存储指定文件夹所有文件名的 树�
             if (isNHeader(buffer, firstLevelHeader)) {
                 isHeaderLine = true;
 
-                if(root.getAllNode().size()>0){
+                if (root.getAllNode().size() > 0) {
 
                     final String uuid = UUID.randomUUID().toString().replaceAll("-", "");
                     final String content = tmp.toString();
@@ -112,16 +113,24 @@ public class ResolveHeaderService//存储指定文件夹所有文件名的 树�
                 pre = newDir;
             }
             Directory current = root;
-            for (int i = firstLevelHeader+1; i < 7; i++) {
+            for (int i = firstLevelHeader + 1; i < 7; i++) {
                 if (isNHeader(buffer, i)) {
                     isHeaderLine = true;
                     int times = i - firstLevelHeader;
-                    while (times-- != 0) {
-                        final String pre = (String) current.getAllNode().keySet().toArray()[current.getAllNode().size() - 1];
-                        current = current.getAllNode().get(pre);
-                    }
-                    final Directory newDir = new Directory();
+                    for (int tmpTimes = times; tmpTimes > 0; tmpTimes--) {
+                        current = root;
+                        try {
+                            while (tmpTimes-- != 0) {
+                                final String pre = (String) current.getAllNode().keySet().toArray()[current.getAllNode().size() - 1];
+                                current = current.getAllNode().get(pre);
+                            }
+                            break;
+                        } catch (ArrayIndexOutOfBoundsException e) {
 
+                        }
+                    }
+
+                    final Directory newDir = new Directory();
 
                     final String uuid = UUID.randomUUID().toString().replaceAll("-", "");
                     final String content = tmp.toString();
@@ -145,7 +154,7 @@ public class ResolveHeaderService//存储指定文件夹所有文件名的 树�
 
         if (buffer.contains("```"))
             detect = !detect;
-        if(!isHeaderLine)
+        if (!isHeaderLine)
             tmp.append(buffer).append("\n");
     }
 
@@ -154,7 +163,7 @@ public class ResolveHeaderService//存储指定文件夹所有文件名的 树�
      * 函数名：getFile
      * 作用：实现将指定文件夹的所有文件存入树中
      */
-    public void readFile(InputStream in,String ebookName) throws Exception {
+    public void readFile(InputStream in, String ebookName) throws Exception {
         ebookId = UUID.randomUUID().toString().replaceAll("-", "");
         final Ebook eBook = new Ebook();
         eBook.setEbookId(ebookId);
@@ -178,8 +187,6 @@ public class ResolveHeaderService//存储指定文件夹所有文件名的 树�
         iebookContentMapper.insertEbookContent(ebookConent);
 
 
-
-
         eBook.setHeader(JSON.toJSONString(getRoot()));
         libraryService.insertEbook(eBook);
         final Directory directory = JSONObject.parseObject(JSON.toJSONString(getRoot()), Directory.class);
@@ -198,15 +205,16 @@ public class ResolveHeaderService//存储指定文件夹所有文件名的 树�
                 System.out.print("       ");
             System.out.println(stringFileNodeEntry.getKey());
             System.out.println(stringFileNodeEntry.getValue().getContentId());
-            printTree(stringFileNodeEntry.getValue(),deep+1);
+            printTree(stringFileNodeEntry.getValue(), deep + 1);
         }
     }
+
     public void printTree(Directory node) {
-        printTree(node,0);
+        printTree(node, 0);
     }
 
-    public void printTree(){
-        printTree(root,0);
+    public void printTree() {
+        printTree(root, 0);
     }
 
 

@@ -74,4 +74,5 @@ public class EBookContentController {
         return "redirect:/ebook/getbook/"+ebookConent.getEbookId();
     }
 
+
 }

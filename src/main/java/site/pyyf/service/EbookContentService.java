@@ -30,6 +30,9 @@ public class EbookContentService {
     }
 
 
+    public void deleteByBookId(String bookId) {
+       iebookContentMapper.deleteByBookId(bookId);
+    }
 }
 
 

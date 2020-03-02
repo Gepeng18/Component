@@ -10,6 +10,17 @@
     <sql id="insertFields">
         ebook_name,ebook_id,header
     </sql>
+    <update id="updateEbookNameByBookId">
+        update library
+        set ebook_name=#{ebookName}
+        where ebook_id=#{ebookId}
+    </update>
+    <delete id="deleteByBookId">
+        delete
+        from library
+        where ebook_id=#{ebookId}
+
+    </delete>
     <select id="selectAllEbooks" resultType="site.pyyf.entity.Ebook">
         select
         <include refid="selectFields"></include>
@@ -19,13 +30,13 @@
         select
         <include refid="selectFields"></include>
         from library
-        where ebook_id=#{bookId}
+        where ebook_id=#{ebookId}
     </select>
 
     <select id="selectHeaderByBookId" resultType="java.lang.String">
             select header
             from library
-            where ebook_id like #{bookId}
+            where ebook_id like #{ebookId}
 
     </select>
 
