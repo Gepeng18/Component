@@ -1,14 +1,21 @@
 HELP.md
 community.vpp.*
-/target/
+
 !.mvn/wrapper/maven-wrapper.jar
-logs/
-/log/
-.DS_Store
+
+**/.DS_Store
 
 ### Data ###
-/data
+**/data/
 
+
+### 应用相关 ###
+**/logs/
+**/log/
+**/cache/
+**/temp/
+**/tmp/
+**/target/
 
 ### STS ###
 .apt_generated
@@ -20,10 +27,10 @@ logs/
 .sts4-cache
 
 ### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
+**/.idea
+**/*.iws
+**/*.iml
+**/*.ipr
 
 ### NetBeans ###
 /nbproject/private/
@@ -36,6 +43,10 @@ logs/
 ### VS Code ###
 .vscode/
 
-### Ebook ###
-/src/main/resources/application.properties
-/src/main/java/site/pyyf/utils/UploadDir.java
+
+**/*.log
+**/*.log.*
+
+
+**/*.properties
+**/README-secret.md
